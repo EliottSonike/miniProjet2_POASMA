@@ -5,6 +5,5 @@
 class Joss : public Strategie {
 public:
     Coup choisir(const std::vector<Coup>& mesCoups, const std::vector<Coup>& coupsAdverses, std::mt19937& rng) override;
-    void reset() override;
     std::string nom() const override;
 };
