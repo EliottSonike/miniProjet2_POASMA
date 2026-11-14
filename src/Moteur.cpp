@@ -1,6 +1,8 @@
 #include "Moteur.hpp"
 #include <vector>
 #include <iostream>
+#include <algorithm>
+#include <iomanip>
 
 int gain(Coup monCoup, Coup coupAdversaire, const Gains& g){
     if(monCoup == Coup::C){
@@ -53,10 +55,31 @@ std::pair<int, int> match(Strategie& s1, Strategie& s2, int nbParties, int nbTou
 }
 
 std::vector<std::pair<std::string, int>> tournoi(std::vector<Strategie*>& population, int nbParties, int nbTours, const Gains& gains, std::mt19937& rng) {
-    // TODO
-    return {};
+    // Une case de la population = un joueur
+    // Deux joueurs peuvent avoir la meme strategie, mais un joueur ne joue jamais contre lui-meme.
+    size_t n = population.size(); // Nombre de joueurs dans la population
+    std::vector<int> scores(n, 0); // Initialisation des scores à zéro
+
+    for (size_t i = 0; i < n; i++) {
+        for (size_t j = i + 1; j < n; j++) { // chaque paire de joueurs differents, une seule fois
+            std::pair<int, int> result = match(*population[i], *population[j], nbParties, nbTours, gains, rng);
+            scores[i] += result.first; // Ajouter le score du joueur i
+            scores[j] += result.second; // Ajouter le score du joueur j
+        }
+    }
+    std::vector<std::pair<std::string, int>> classement;
+    for (size_t i = 0; i < n; i++) {
+        classement.push_back({population[i]->nom(), scores[i]});
+    }
+    std::sort(classement.begin(), classement.end(), [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+        return a.second > b.second;
+    });
+    return classement;
 }
 
 void afficherClassement(const std::vector<std::pair<std::string, int>>& classement) {
-    // TODO
+    std::cout << "Classement du tournoi :" << std::endl;
+    for (const auto& joueur : classement) {
+        std::cout << std::setw(20) << std::left << joueur.first << " : " << std::setw(5) << std::right << joueur.second << " points" << std::endl;
+    }
 }

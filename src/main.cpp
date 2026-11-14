@@ -7,7 +7,8 @@
 int main() {
     std::mt19937 rng(2052004);
     Gains gains{5, 3, 2,0};
-    TitForTat tft;
+    TitForTat tft1;
+    TitForTat tft2;
     AllD alld;
 
     //test partie
@@ -21,4 +22,8 @@ int main() {
     //std::cout << "match test : " << std::endl;
     //std::cout << "tft : " << matchTest.first << std::endl;
     //std::cout << "alld : " << matchTest.second << std::endl;
+
+    //test tournoi
+    std::vector<Strategie*> population = { &tft1, &tft2, &alld };
+    afficherClassement(tournoi(population, 5, 10, gains, rng));
 }

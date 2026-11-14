@@ -25,3 +25,22 @@
         - JOSS : TIT-FOR-TAT, mais remplace C par D une fois sur dix de facon deterministe
 
     Graine aléatoire : std::mt19937 rng(2052004); (valeur arbitraire)
+
+14/11 : moteur du tournoi
+    - Modèle de population : une case de la population = un JOUEUR (comme dans le mini-tournoi du CM page 68 : TFT1, TFT2, ALL-D).
+        - un joueur ne joue jamais contre lui-même : chaque paire de joueurs différents joue un match (boucle j = i + 1)
+        - pour faire jouer une stratégie contre elle-même, on met deux joueurs de cette stratégie dans la population (ex : TFT1 contre TFT2)
+        - ce modèle servira directement pour la sélection (étape 3), où le nombre de joueurs de chaque stratégie varie
+
+    - Impasse : j'avais d'abord fait jouer chaque case contre elle-même (boucle j = i, en comptant le score une seule fois),
+      en pensant qu'une case = une stratégie et que ce match représentait TFT1 contre TFT2.
+      Problème : si on met deux TFT dans la population, le match TFT contre TFT est joué 3 fois au lieu d'une.
+      Le CM (page 68) montre qu'un joueur ne joue pas contre lui-même (diagonale vide) → retour à j = i + 1.
+
+    - Stratégies sans état interne : JOSS et TESTER décident uniquement à partir de mesCoups / coupsAdverses
+      (mesCoups.size() donne le numéro du tour), donc pas besoin de reset() et un même objet peut servir à plusieurs joueurs sans risque.
+
+    - Différence avec Axelrod 1980 : avec un joueur par stratégie, il n'y a pas de match entre "jumeaux" (Axelrod en faisait un).
+      À prendre en compte pour répondre à la question "TFT gagne-t-il ?".
+
+    - Test de validation prévu : population {TFT, TFT, ALL-D}, 1 partie de 10 tours → on doit retrouver TFT1 = 48, TFT2 = 48, ALL-D = 46 (CM page 68).
