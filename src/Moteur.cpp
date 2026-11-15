@@ -23,16 +23,25 @@ int gain(Coup monCoup, Coup coupAdversaire, const Gains& g){
     }
 }
 
-std::pair<int, int> partie(Strategie& s1, Strategie& s2, int nbTours, const Gains& gains, std::mt19937& rng) {
+
+std::pair<int, int> partie(Strategie& s1, Strategie& s2, int nbTours, const Gains& gains, std::mt19937& rng, const Options& options) {
     
     std::vector<Coup> listeCoupsS1;
     std::vector<Coup> listeCoupsS2;
     int scoreS1 = 0;
     int scoreS2 = 0;
-
+    std::bernoulli_distribution distribution(options.bruit);
     for (int i = 0; i < nbTours; i++){
         Coup coupS1 = s1.choisir(listeCoupsS1, listeCoupsS2, rng);
         Coup coupS2 = s2.choisir(listeCoupsS2, listeCoupsS1, rng);
+        if(options.bruit > 0.0) {
+            if (distribution(rng)) {
+                coupS1 = (coupS1 == Coup::C) ? Coup::D : Coup::C; // Inverse coup de s1
+            }
+            if (distribution(rng)) {
+                coupS2 = (coupS2 == Coup::C) ? Coup::D : Coup::C; // Inverse coup de s2
+            }  
+        }
         scoreS1 += gain(coupS1, coupS2, gains);
         scoreS2 += gain(coupS2, coupS1, gains);
         listeCoupsS1.push_back(coupS1);
@@ -41,20 +50,20 @@ std::pair<int, int> partie(Strategie& s1, Strategie& s2, int nbTours, const Gain
     return {scoreS1,scoreS2};
 }
 
-std::pair<int, int> match(Strategie& s1, Strategie& s2, int nbParties, int nbTours, const Gains& gains, std::mt19937& rng) {
+std::pair<int, int> match(Strategie& s1, Strategie& s2, int nbParties, int nbTours, const Gains& gains, std::mt19937& rng, const Options& options) {
     int totalS1 = 0;
     int totalS2 = 0;
     for (int i = 0; i<nbParties; i++){
         s1.reset();
         s2.reset();
-        std::pair<int, int> game = partie(s1, s2, nbTours, gains, rng);
+        std::pair<int, int> game = partie(s1, s2, nbTours, gains, rng, options);
         totalS1 += game.first;
         totalS2 += game.second;
     }
     return {totalS1,totalS2};
 }
 
-std::vector<std::pair<std::string, int>> tournoi(std::vector<Strategie*>& population, int nbParties, int nbTours, const Gains& gains, std::mt19937& rng) {
+std::vector<std::pair<std::string, int>> tournoi(std::vector<Strategie*>& population, int nbParties, int nbTours, const Gains& gains, std::mt19937& rng, const Options& options) {
     // Une case de la population = un joueur
     // Deux joueurs peuvent avoir la meme strategie, mais un joueur ne joue jamais contre lui-meme.
     size_t n = population.size(); // Nombre de joueurs dans la population
@@ -62,7 +71,7 @@ std::vector<std::pair<std::string, int>> tournoi(std::vector<Strategie*>& popula
 
     for (size_t i = 0; i < n; i++) {
         for (size_t j = i + 1; j < n; j++) { // chaque paire de joueurs differents, une seule fois
-            std::pair<int, int> result = match(*population[i], *population[j], nbParties, nbTours, gains, rng);
+            std::pair<int, int> result = match(*population[i], *population[j], nbParties, nbTours, gains, rng, options);
             std::cout << "Match entre " << population[i]->nom() << " et " << population[j]->nom() << " : "
                       << result.first << " - " << result.second << std::endl;
             scores[i] += result.first; // Ajouter le score du joueur i

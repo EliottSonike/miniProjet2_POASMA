@@ -14,6 +14,7 @@ int main() {
     Joss joss;
     Grudger grudger;
     WSLS wsls;
+    Options options;
 
     //test partie
 
@@ -32,7 +33,9 @@ int main() {
     //afficherClassement(tournoi(population, 5, 10, gains, rng));
 
     //test tournoi d'Axelrod
+    options.bruit = 0.05;
+    //options.w = 0.995;
     std::vector<Strategie*> population = { &tft, &alld, &random, &tester, &joss, &grudger, &wsls };
-    afficherClassement(tournoi(population, 5, 200, gains, rng));
+    afficherClassement(tournoi(population, 5, 200, gains, rng, options));
 
 }
