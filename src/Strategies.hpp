@@ -5,3 +5,5 @@
 #include "strategies/TitForTat.hpp"
 #include "strategies/Tester.hpp"
 #include "strategies/Joss.hpp"
+#include "strategies/Grudger.hpp"
+#include "strategies/WSLS.hpp"

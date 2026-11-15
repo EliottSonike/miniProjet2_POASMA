@@ -1,15 +1,19 @@
 #include "Moteur.hpp"
 #include "Strategies.hpp"
-#include "strategies/AllD.hpp"
-#include "strategies/TitForTat.hpp"
 #include <iostream>
 
 int main() {
     std::mt19937 rng(2052004);
     Gains gains{5, 3, 2,0};
-    TitForTat tft1;
-    TitForTat tft2;
+    //TitForTat tft1;
+    //TitForTat tft2;
     AllD alld;
+    Random random;
+    TitForTat tft;
+    Tester tester;
+    Joss joss;
+    Grudger grudger;
+    WSLS wsls;
 
     //test partie
 
@@ -24,6 +28,11 @@ int main() {
     //std::cout << "alld : " << matchTest.second << std::endl;
 
     //test tournoi
-    std::vector<Strategie*> population = { &tft1, &tft2, &alld };
-    afficherClassement(tournoi(population, 5, 10, gains, rng));
+    //std::vector<Strategie*> population = { &tft1, &tft2, &alld };
+    //afficherClassement(tournoi(population, 5, 10, gains, rng));
+
+    //test tournoi d'Axelrod
+    std::vector<Strategie*> population = { &tft, &alld, &random, &tester, &joss, &grudger, &wsls };
+    afficherClassement(tournoi(population, 5, 200, gains, rng));
+
 }

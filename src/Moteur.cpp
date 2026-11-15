@@ -63,6 +63,8 @@ std::vector<std::pair<std::string, int>> tournoi(std::vector<Strategie*>& popula
     for (size_t i = 0; i < n; i++) {
         for (size_t j = i + 1; j < n; j++) { // chaque paire de joueurs differents, une seule fois
             std::pair<int, int> result = match(*population[i], *population[j], nbParties, nbTours, gains, rng);
+            std::cout << "Match entre " << population[i]->nom() << " et " << population[j]->nom() << " : "
+                      << result.first << " - " << result.second << std::endl;
             scores[i] += result.first; // Ajouter le score du joueur i
             scores[j] += result.second; // Ajouter le score du joueur j
         }

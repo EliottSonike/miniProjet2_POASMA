@@ -44,3 +44,11 @@
       À prendre en compte pour répondre à la question "TFT gagne-t-il ?".
 
     - Test de validation prévu : population {TFT, TFT, ALL-D}, 1 partie de 10 tours → on doit retrouver TFT1 = 48, TFT2 = 48, ALL-D = 46 (CM page 68).
+
+15/11 : Tournoi d'Axelrod : 
+    Observations : 
+      -TFT : n'affronte pas assez de strategies coopérative et ne peux donc pas farmer des points.
+      -AllD : se fait avoir pas les strategies qui verifie qui verifient si il joue D et qui ensuite l'empeche de marquer des points
+      -Joss : joue comme TFT, mais vole des points avec ses D surprises, gagne de peu grace a ca. Contre ALL-D il perd comme TFT.
+      -Random : dernier, perd beaucoup contre ALL-D (998 - 3503) et comme il joue au hasard il ne peut jamais construire une longue cooperation pour marquer des points. Il bat quand meme Tester.
+      -Tester : contre ALL-D il voit le D au tour 1 donc passe en TFT, ca donne D/D tout le temps donc égalité. Contre ceux qui jouent C au tour 1 (TFT, JOSS) il essaie d'exploiter avec C, C, D mais ils ripostent : egalite contre TFT et il perd contre JOSS.
