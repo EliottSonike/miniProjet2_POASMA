@@ -30,8 +30,11 @@ std::pair<int, int> partie(Strategie& s1, Strategie& s2, int nbTours, const Gain
     std::vector<Coup> listeCoupsS2;
     int scoreS1 = 0;
     int scoreS2 = 0;
-    std::bernoulli_distribution distribution(options.bruit);
-    for (int i = 0; i < nbTours; i++){
+    std::bernoulli_distribution distribution(options.bruit); //bruit
+    std::bernoulli_distribution continuation(options.w); // horizon inconnu 
+    int tour = 0;
+    bool continuer = true; // au moins un tour
+    while (continuer){
         Coup coupS1 = s1.choisir(listeCoupsS1, listeCoupsS2, rng);
         Coup coupS2 = s2.choisir(listeCoupsS2, listeCoupsS1, rng);
         if(options.bruit > 0.0) {
@@ -46,6 +49,13 @@ std::pair<int, int> partie(Strategie& s1, Strategie& s2, int nbTours, const Gain
         scoreS2 += gain(coupS2, coupS1, gains);
         listeCoupsS1.push_back(coupS1);
         listeCoupsS2.push_back(coupS2);
+        tour++;
+
+        if (options.w > 0.0) {
+            continuer = continuation(rng);
+        } else {
+            continuer = (tour < nbTours);
+        }
     }
     return {scoreS1,scoreS2};
 }
